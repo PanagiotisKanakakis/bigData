@@ -5,23 +5,18 @@ import geopy.distance
 
 def trainDataPreprocess():
     df = pd.read_csv("train_set.csv").dropna()
-
-    init = df.head(n=1)
-    for index, row in init.iterrows():
-        init_row = row
-
     id = 0
     dict = {}
-    points = []
+    dict2 = {}
+    # df = df.head(n=10000)
     for index, row in df.iterrows():
-        if(init_row['journeyPatternId'] == row['journeyPatternId']):
-            points.append( [ row['timestamp'],row['latitude'],row['longitude'] ] )
+        if row['vehicleID'] in dict2 and row['journeyPatternId'] == dict2[row['vehicleID']][0]:
+            dict[dict2[row['vehicleID']][1]][2].append( [ row['timestamp'],row['latitude'],row['longitude'] ] )
         else:
-            dict[id] = [init_row['journeyPatternId'] , init_row['vehicleID'],points]
-            points = []
-            points.append( [ row['timestamp'],row['latitude'],row['longitude'] ] )
-            init_row = row
+            dict[id] = [row['journeyPatternId'], row['vehicleID'], [[row['timestamp'],row['latitude'],row['longitude']]] ]
+            dict2[row['vehicleID']] = [row['journeyPatternId'], id]
             id+=1
+
 
     return pd.DataFrame.from_dict(dict)
 
@@ -31,16 +26,14 @@ def writeToFile(df,filename):
 
 
 def clearTripleData():
-    df = pd.read_csv("trips.csv")
+    df = pd.read_csv("trips.csv",usecols=["0", "1", "2"])
     # count total routes. last index value
     totalRoutes = df.tail(1).index.item()
-
     dict = {}
     totalDistanceCriteria = 0
     maxDistanceCriteria = 0
-    for r in df.iterrows():
-        row = r[1]
-        route = literal_eval(row[2])
+    for index,r in df.iterrows():
+        route = literal_eval(r[2])
         if len(route) > 2:
             totalRouteDistance,pruneFromData = calculateTotalRouteDistance(route)
             if totalRouteDistance < 2.0 or pruneFromData:
@@ -51,9 +44,7 @@ def clearTripleData():
                     # total distance filter
                     totalDistanceCriteria +=1
             else:
-                dict[r[0]] = row
-
-
+                dict[index] = r
     print "Total routes are " + str(totalRoutes)
     print "Routes deleted by the total distance filter " + str(totalDistanceCriteria)
     print "Routes deleted by the max distance filter " + str(maxDistanceCriteria)
