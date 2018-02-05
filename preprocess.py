@@ -8,7 +8,7 @@ def trainDataPreprocess():
     id = 0
     dict = {}
     dict2 = {}
-    # df = df.head(n=10000)
+
     for index, row in df.iterrows():
         if row['vehicleID'] in dict2 and row['journeyPatternId'] == dict2[row['vehicleID']][0]:
             dict[dict2[row['vehicleID']][1]][2].append( [ row['timestamp'],row['latitude'],row['longitude'] ] )
@@ -19,11 +19,6 @@ def trainDataPreprocess():
 
 
     return pd.DataFrame.from_dict(dict)
-
-def writeToFile(df,filename):
-    df.to_csv(filename)
-    return
-
 
 def clearTripleData():
     df = pd.read_csv("trips.csv",usecols=["0", "1", "2"])
