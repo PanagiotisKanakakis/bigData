@@ -7,28 +7,52 @@ import time
 import numpy as np
 from collections import defaultdict
 from operator import itemgetter
+from multiprocessing import Pool
+from functools import partial
 
 def dtwNearestPaths(trips,test_a1):
 
-    # x = np.array([1, 2, 3, 4, 5], dtype='float')
-    # y = np.array([2, 3, 4], dtype='float')
-    # fastdtw(x,y)
-    top5 = []
-    for index,rX in test_a1.iterrows():
-        routeX = literal_eval(rX[0])
-        for index,rY in trips.iterrows():
-            journeyPatternId = rY[0]
-            routeY = literal_eval(rY[1])
-            start_time = time.time()
-            t = fastdtw(routeX,routeY)
-            print index
-            top5.append([t[0],journeyPatternId,time.time()-start_time])
+    # parallel implementation
+    trips_list = trips.values.tolist()
+    for index,X in test_a1.iterrows():
+        pool = Pool(4)
+        routeX = literal_eval(X[0])
+        start_time = time.time()
+        top5 = pool.map(partial(mappedFunction, X=routeX), trips_list)
+        pool.close()
+        pool.join()
         top5 = sorted(top5, key=itemgetter(0))
-        for i in range(0,5):
+        for i in range(0,6):
             print top5[i]
+        print time.time()-start_time
+        print 100*"*"
 
-        sys.exit(0)
+    # non parallel implementation
+    # for index,X in test_a1.iterrows():
+    #     routeX = literal_eval(X[0])
+    #     top5 = []
+    #     start_time = time.time()
+    #     for index,rY in trips.iterrows():
+    #         journeyPatternId = rY[0]
+    #         routeY = literal_eval(rY[1])
+    #         start_time = time.time()
+    #         t = fastdtw(routeX,routeY)
+    #         print index
+    #         top5.append([t[0],journeyPatternId,time.time()-start_time])
+    #         top5 = sorted(top5, key=itemgetter(0))
+    #     for i in range(1,6):
+    #         print top5[i]
+    #     print time.time()-start_time
+    #     sys.exit(0)
 
+
+
+def mappedFunction(Y,X):
+    journeyPatternId = Y[0]
+    Y = literal_eval(Y[1])
+    start_time = time.time()
+    t = fastdtw(X,Y)
+    return [t[0],journeyPatternId,time.time()-start_time]
 
 def fastdtw(x, y, radius=1):
     return __fastdtw(x, y, radius)

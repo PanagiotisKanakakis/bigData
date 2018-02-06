@@ -2,6 +2,7 @@ import pandas as pd
 import sys
 from ast import literal_eval
 import geopy.distance
+from utils import *
 
 def trainDataPreprocess():
     df = pd.read_csv("train_set.csv").dropna()
@@ -29,7 +30,7 @@ def clearTripleData():
     maxDistanceCriteria = 0
     for index,r in df.iterrows():
         route = literal_eval(r[2])
-        if len(route) > 2:
+        if len(route) >= 2:
             totalRouteDistance,pruneFromData = calculateTotalRouteDistance(route)
             if totalRouteDistance < 2.0 or pruneFromData:
                 if pruneFromData:
@@ -40,7 +41,7 @@ def clearTripleData():
                     totalDistanceCriteria +=1
             else:
                 dict[index] = r
-    print "Total routes are " + str(totalRoutes)
+    print "Total routes are " + str(totalRoutes+1)
     print "Routes deleted by the total distance filter " + str(totalDistanceCriteria)
     print "Routes deleted by the max distance filter " + str(maxDistanceCriteria)
     print "Updated data contains  " + str(len(dict)) + " records!"
@@ -53,13 +54,10 @@ def calculateTotalRouteDistance(route):
     for i in range(0,len(route)-1):
         point1 = (route[i][1],route[i][2])
         point2 = (route[i+1][1],route[i+1][2])
-        distance = distanceCount(point1,point2)
+        distance = distanceHaversine(point1,point2)
         if distance > 2.0:
             # max distance between two points bigger than 2km.
             # record should be removed from data
             pruneFromData = True
         totalDistance += distance
     return totalDistance,pruneFromData
-
-def distanceCount(point1,point2):
-    return geopy.distance.vincenty(point1,point2).km
