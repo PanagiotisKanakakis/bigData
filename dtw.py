@@ -8,6 +8,7 @@ import numpy as np
 from collections import defaultdict
 from operator import itemgetter
 from multiprocessing import Pool
+import multiprocessing
 from functools import partial
 
 def dtwNearestPaths(trips,test_a1):
@@ -15,7 +16,7 @@ def dtwNearestPaths(trips,test_a1):
     # parallel implementation
     trips_list = trips.values.tolist()
     for index,X in test_a1.iterrows():
-        pool = Pool(4)
+        pool = Pool(multiprocessing.cpu_count())
         routeX = literal_eval(X[0])
         start_time = time.time()
         top5 = pool.map(partial(mappedFunction, X=routeX), trips_list)
