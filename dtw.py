@@ -10,6 +10,7 @@ from operator import itemgetter
 from multiprocessing import Pool
 import multiprocessing
 from functools import partial
+from utils import plot
 
 def dtwNearestPaths(trips,test_a1):
 
@@ -25,6 +26,10 @@ def dtwNearestPaths(trips,test_a1):
         top5 = sorted(top5, key=itemgetter(0))
         for i in range(0,6):
             print top5[i]
+            route = str(top5[i][3])
+            print type(route)
+            print pd.DataFrame(["dtw"+str(i),route])
+            plot(pd.DataFrame(["dtw"+str(i),top5[i][1],route]))
         print time.time()-start_time
         print 100*"*"
 
@@ -53,7 +58,7 @@ def mappedFunction(Y,X):
     Y = literal_eval(Y[1])
     start_time = time.time()
     t = fastdtw(X,Y)
-    return [t[0],journeyPatternId,time.time()-start_time]
+    return [t[0],journeyPatternId,time.time()-start_time,Y]
 
 def fastdtw(x, y, radius=1):
     return __fastdtw(x, y, radius)
