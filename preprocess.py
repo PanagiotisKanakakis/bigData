@@ -41,6 +41,8 @@ def clearTripleData():
                     totalDistanceCriteria +=1
             else:
                 dict[index] = r
+        else:
+            totalDistanceCriteria +=1
     print "Total routes are " + str(totalRoutes+1)
     print "Routes deleted by the total distance filter " + str(totalDistanceCriteria)
     print "Routes deleted by the max distance filter " + str(maxDistanceCriteria)
@@ -61,3 +63,8 @@ def calculateTotalRouteDistance(route):
             pruneFromData = True
         totalDistance += distance
     return totalDistance,pruneFromData
+
+def plotFiveRandomCleanTrips():
+    df = pd.read_csv("tripsClean.csv",usecols=["Unnamed: 0", "0", "2"])
+    df_random = df.sample(n=5)
+    plot(df_random)

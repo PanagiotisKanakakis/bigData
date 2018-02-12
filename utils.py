@@ -1,5 +1,7 @@
 import pandas as pd
 import math
+import gmplot
+from ast import literal_eval
 
 def writeToFile(df,filename):
     df.to_csv(filename)
@@ -35,3 +37,12 @@ def distanceHaversine(point1,point2):
     # print d,(brng/(2*math.pi))*360
     # return d,(brng/(2*math.pi))*360
     return d
+
+def plot(df):
+    for index,r in df.iterrows():
+        route = literal_eval(r[2])
+        gmap = gmplot.GoogleMapPlotter(route[len(route)/2][1],route[len(route)/2][2], 13)
+        longitudes = [x[1] for x in route]
+        latitudes  = [x[2] for x in route]
+        gmap.plot(longitudes, latitudes, 'green', edge_width=4)
+        gmap.draw("./plots/tripID:"+`r[0]`+"_JourID:"+r[1]+".html")
