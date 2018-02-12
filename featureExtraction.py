@@ -25,17 +25,17 @@ def getGridRepresentation(filename):
 
 def getRoute(trip):
 
-    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaler = MinMaxScaler(feature_range=(0, 2))
     data =  literal_eval(trip[2])
     scaler.fit(data)
     scaledData = scaler.transform(data)
 
-    route = np.zeros(100)
+    route = np.zeros(400)
     for point in scaledData:
         # long = x and lat = y
         y = point[1]
         x = point[2]
-        route[(int)(10*x + y)]+=1
+        route[(int)(20*x + y)]+=1
 
     return route
 
