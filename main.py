@@ -3,6 +3,7 @@ from utils import *
 from dtw import *
 from lcss import *
 from featureExtraction import *
+from classification import *
 
 
 #df = trainDataPreprocess()
@@ -14,8 +15,11 @@ from featureExtraction import *
 
 #plotFiveRandomCleanTrips()
 
-trips , test_a1 = generateSequences("tripsClean.csv" , "test_set_a1.csv")
-dtwNearestPaths(trips,test_a1)
+#trips , test_a1 = generateSequences("tripsClean.csv" , "test_set_a1.csv")
+#dtwNearestPaths(trips,test_a1)
 
 #trips , test_a2 = generateSequences("tripsClean.csv" , "test_set_a2.csv")
 #lcss(trips, test_a2)
+
+X,Y = getGridRepresentation(getTripsCleanAsList("tripsClean.csv"))
+evaluationMetrics(X,Y)
