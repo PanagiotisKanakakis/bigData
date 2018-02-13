@@ -19,5 +19,5 @@ from classification import *
 # dtwNearestPaths(trips,test_a1)
 
 
-X,Y = getGridRepresentation("tripsClean.csv")
+X,Y = getGridRepresentation(getTripsCleanAsList("tripsClean.csv"))
 evaluationMetrics(X,Y)
