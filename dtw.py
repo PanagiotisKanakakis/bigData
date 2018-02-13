@@ -24,16 +24,11 @@ def dtwNearestPaths(trips,test_a1):
         pool.close()
         pool.join()
         top5 = sorted(top5, key=itemgetter(0))
+        plot(routeX, "./plots/dtw/"+str(index)+"/dtw_route_"+str(index))
         for i in range(0,6):
-            # print top5[i]
-            route = unicode(top5[i][3])
-            # print route
-            # print type(route)
-            # print pd.DataFrame(["dtw"+str(i),route])
-            d = [{"0": "dtw"+str(i),"1":top5[i][1],"2":route}]
-            df = pd.DataFrame(d)
-            plot(df)
-        print time.time()-start_time
+            print "Neighbour "+str(i)+": distance="+ str(top5[i][0]) + "  -  journayId=" + top5[i][1] + "  -  time=" + str(top5[i][2])
+            plot(top5[i][3], "./plots/dtw/"+str(index)+"/dtw_neighbour_"+str(i)+"_for_route_"+str(index))
+        print "Total time = "+str(time.time()-start_time)
         print 100*"*"
 
     # non parallel implementation
@@ -92,7 +87,7 @@ def __dtw(x, y, window):
     D = defaultdict(lambda: (float('inf'),))
     D[0, 0] = (0, 0, 0)
     for i, j in window:
-        dt = distanceHaversine((x[i-1][2],x[i-1][1]), (y[j-1][1],y[j-1][2]))
+        dt = distanceHaversine((x[i-1][2],x[i-1][1]), (y[j-1][2],y[j-1][1]))
         D[i, j] = min((D[i-1, j][0]+dt, i-1, j), (D[i, j-1][0]+dt, i, j-1),
                       (D[i-1, j-1][0]+dt, i-1, j-1), key=lambda a: a[0])
     path = []

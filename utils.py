@@ -8,7 +8,7 @@ def writeToFile(df,filename):
     return
 
 def generateSequences(trips,filename):
-    fields = ['0', '2']
+    fields = ['0', '1']
     df_trips = pd.read_csv(trips, usecols=fields)
     df_test = pd.read_csv(filename,sep='\n')
     return df_trips,df_test
@@ -38,11 +38,22 @@ def distanceHaversine(point1,point2):
     # return d,(brng/(2*math.pi))*360
     return d
 
-def plot(df):
-    for index,r in df.iterrows():
-        route = literal_eval(r[2])
-        gmap = gmplot.GoogleMapPlotter(route[len(route)/2][1],route[len(route)/2][2], 13)
-        longitudes = [x[1] for x in route]
-        latitudes  = [x[2] for x in route]
-        gmap.plot(longitudes, latitudes, 'green', edge_width=4)
-        gmap.draw("./plots/tripID:"+`r[0]`+"_JourID:"+r[1]+".html")
+def plot(route, filename):
+    gmap = gmplot.GoogleMapPlotter(route[len(route)/2][2],route[len(route)/2][1], 13)
+    longitudes = [x[1] for x in route]
+    latitudes  = [x[2] for x in route]
+    gmap.plot(latitudes, longitudes, 'green', edge_width=4)
+    gmap.draw(filename + ".html")
+    #gmap.draw("./plots/tripID:"+`r[0]`+"_JourID:"+r[1]+".html")
+
+def plotLCSS(route1, sub, filename):
+    gmap = gmplot.GoogleMapPlotter(route1[len(route1)/2][2],route1[len(route1)/2][1], 13)
+    longitudes = [x[1] for x in route1]
+    latitudes  = [x[2] for x in route1]
+    gmap.plot(latitudes, longitudes, 'green', edge_width=4)
+    
+    longitudes = [x[1] for x in sub]
+    latitudes  = [x[2] for x in sub]
+    gmap.plot(latitudes, longitudes, 'red', edge_width=4)
+
+    gmap.draw(filename + ".html")
