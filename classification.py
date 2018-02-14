@@ -23,19 +23,22 @@ from featureExtraction import *
 def evaluationMetrics(X,Y):
 
     beat = False
+    
     for clf, name in (
-            (KNeighborsClassifier(n_neighbors=1,n_jobs=-1), "k-Nearest Neighbor"),
-            (svm.SVC(kernel='linear',probability = True), "linear-SVM"),
-            (svm.SVC(kernel='rbf',probability = True), "rbf-SVM"),
+            (KNeighborsClassifier(n_neighbors=1,n_jobs=8), "k-Nearest Neighbor"),
             (linear_model.LogisticRegression(C=1e5),"Logistic Regression"),
-            (RandomForestClassifier(max_depth=50, n_estimators=100, max_features=25), "Random forest")):
+            (RandomForestClassifier(max_depth=50, n_estimators=100, max_features=25,n_jobs=8), "Random forest")):
+            #(svm.SVC(kernel='linear',probability = True), "linear-SVM"),
+            #(svm.SVC(kernel='rbf',probability = True), "rbf-SVM")):
         print('=' * 80)
         print(name)
         classifier = execution(clf,X,Y)
         if(not beat and name == "k-Nearest Neighbor"):
             beat = True
-            beatTheBenchmark(classifier,"test_set.csv")
-
+            #beatTheBenchmark(classifier,"test_set.csv")
+    
+    #clf = RandomForestClassifier(max_depth=50, n_estimators=100, max_features=25)
+    #classifier = execution(clf,X,Y)
 
 def execution(classifier,X,Y):
 

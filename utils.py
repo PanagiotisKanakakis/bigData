@@ -5,7 +5,7 @@ from ast import literal_eval
 
 def getTripsCleanAsList(filename):
     # df_tripsClean = pd.read_csv(filename,usecols=["0", "1", "2"])
-    df_tripsClean = pd.read_csv(filename,usecols=["0","2"])
+    df_tripsClean = pd.read_csv(filename,usecols=["0","1"])
     return df_tripsClean.values.tolist()
 
 def writeToFile(df,filename):
