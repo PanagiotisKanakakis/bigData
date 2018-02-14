@@ -4,7 +4,6 @@ import gmplot
 from ast import literal_eval
 
 def getTripsCleanAsList(filename):
-    # df_tripsClean = pd.read_csv(filename,usecols=["0", "1", "2"])
     df_tripsClean = pd.read_csv(filename,usecols=["0","1"])
     return df_tripsClean.values.tolist()
 
@@ -49,7 +48,6 @@ def plot(route, filename):
     latitudes  = [x[2] for x in route]
     gmap.plot(latitudes, longitudes, 'green', edge_width=4)
     gmap.draw(filename + ".html")
-    #gmap.draw("./plots/tripID:"+`r[0]`+"_JourID:"+r[1]+".html")
 
 def plotLCSS(route1, sub, filename):
     gmap = gmplot.GoogleMapPlotter(route1[len(route1)/2][2],route1[len(route1)/2][1], 13)
